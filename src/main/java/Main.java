@@ -1,9 +1,11 @@
-package classes;
+import service.NegativeTextAnalyzer;
+import service.SpamAnalyzer;
+import service.TooLongTextAnalyzer;
+import model.Label;
+import api.TextAnalyzer;
 
-import enums.Label;
-import interfaces.TextAnalyzer;
-
-import java.util.Arrays;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
@@ -45,7 +47,7 @@ public class Main {
         };
 
         // тестовые комментарии
-        String[] tests = new String[9];
+        String[] tests = new String[10];
         tests[0] = "This comment is so good.";                            // OK
         tests[1] = "This comment is so Loooooooooooooooooooooooooooong."; // TOO_LONG
         tests[2] = "Very negative comment !!!!=(!!!!;";                   // NEGATIVE_TEXT
@@ -55,8 +57,11 @@ public class Main {
         tests[6] = "Negative bad :( spam.";                               // SPAM or NEGATIVE_TEXT
         tests[7] = "Very bad, very neg =(, very ..................";      // SPAM or NEGATIVE_TEXT or TOO_LONG
         tests[8] = "this is sad :(";                                      // NEGATIVE_TEXT
-        TextAnalyzer[][] textAnalyzers = {textAnalyzers1, textAnalyzers2, textAnalyzers3,
-                textAnalyzers4, textAnalyzers5, textAnalyzers6};
+        tests[9] = "fucking awesome!";                                    // OK
+//        TextAnalyzer[][] textAnalyzers = {textAnalyzers1, textAnalyzers2, textAnalyzers3,
+//                textAnalyzers4, textAnalyzers5, textAnalyzers6};
+//
+        TextAnalyzer[][] textAnalyzers = {textAnalyzers1};
 
         Main testObject = new Main();
         int numberOfAnalyzer; // номер анализатора, указанный в идентификаторе textAnalyzers{№}
@@ -66,9 +71,11 @@ public class Main {
             System.out.print("test #" + numberOfTest + ": ");
             System.out.println(test);
             for (TextAnalyzer[] analyzers : textAnalyzers) {
-                System.out.print(numberOfAnalyzer + ": ");
-                System.out.println(testObject.checkLabels(analyzers, test));
+                //System.out.print(numberOfAnalyzer + ": ");
+                //System.out.println(testObject.checkLabels(analyzers, test));
+                System.out.println(testObject.getBadLabels(analyzers, test));
                 numberOfAnalyzer++;
+                System.out.println();
             }
             numberOfTest++;
         }
@@ -81,6 +88,38 @@ public class Main {
                 .filter(returnedLabel -> returnedLabel != Label.OK)
                 .findFirst().orElse(Label.OK);
     }
+
+
+    //  now this method returns list of labels
+    private List<Label> getBadLabels(TextAnalyzer[] analyzers, String text) {
+        return Arrays.stream(analyzers)
+                .map(analyzer -> analyzer.processText(text))
+                .filter(returnedLabel -> returnedLabel != Label.OK)
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toList(),
+                        list -> {
+                            if (list.isEmpty()) {
+                                return Collections.singletonList(Label.OK);
+                            }
+                            return list;
+                        }
+                ));
+    }
+
+
+//    private List<Label> getBadLabels(TextAnalyzer[] analyzers, String text) {
+//        List<Label> q = Arrays.stream(analyzers)
+//                .map(analyzer -> analyzer.processText(text))
+//                .filter(returnedLabel -> returnedLabel != Label.OK)
+//                .collect(Collectors.toList());
+//
+//        if (q.isEmpty()) {
+//            return Collections.singletonList(Label.OK);
+//        }
+//
+//        return q;
+//    }
+
 
     /*
     without streams

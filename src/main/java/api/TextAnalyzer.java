@@ -1,6 +1,6 @@
-package interfaces;
+package api;
 
-import enums.Label;
+import model.Label;
 
 public interface TextAnalyzer {
     Label processText(String text);

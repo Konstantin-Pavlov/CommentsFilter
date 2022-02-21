@@ -1,7 +1,7 @@
-package abstract_classes;
+package service;
 
-import enums.Label;
-import interfaces.TextAnalyzer;
+import model.Label;
+import api.TextAnalyzer;
 
 import java.util.Arrays;
 

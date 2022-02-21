@@ -1,7 +1,6 @@
-package classes;
+package service;
 
-import abstract_classes.KeywordAnalyzer;
-import enums.Label;
+import model.Label;
 
 public class SpamAnalyzer extends KeywordAnalyzer {
     private final String[] keywords;

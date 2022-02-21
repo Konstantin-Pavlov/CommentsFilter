@@ -1,7 +1,7 @@
-package classes;
+package service;
 
-import enums.Label;
-import interfaces.TextAnalyzer;
+import model.Label;
+import api.TextAnalyzer;
 
 public class TooLongTextAnalyzer implements TextAnalyzer {
     private final int maxLength;
